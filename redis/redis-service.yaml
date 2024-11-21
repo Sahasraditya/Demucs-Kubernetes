@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  type: LoadBalancer  # Change type to LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 6379         # The port to expose externally
+      targetPort: 6379   # The target port inside the Redis container
+  selector:
+    app: redis

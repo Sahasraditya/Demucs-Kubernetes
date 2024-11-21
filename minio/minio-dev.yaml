@@ -1,0 +1,35 @@
+# deploys new namespace for the MinIO pod
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio-dev # if you want a different namespace name, change
+  labels:
+    name: minio-dev # if you want a new metadata.name, change
+---
+# this script deploys new MinIO pod into kubernetes namespace
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: minio
+  name: minio
+  namespace: minio-dev
+spec:
+  containers:
+  - name: minio
+    image: quay.io/minio/minio:latest
+    command:
+    - /bin/bash
+    - -c
+    args:
+    - minio server /data --console-address :9090
+    volumeMounts:
+    - mountPath: /data
+      name: localvolume # `spec.volumes`
+  nodeSelector:
+    kubernetes.io/hostname: kubealpha.local # node label (associated Worker Node) where we want to deploy pod
+  volumes:
+  - name: localvolume
+    hostPath:
+      path: /mnt/disk1/data # path to a local drive or volume on the Kubernetes worker node
+      type: DirectoryOrCreate # path to the last directory must exist

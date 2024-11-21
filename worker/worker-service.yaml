@@ -1,0 +1,19 @@
+#
+# The original Google demo depended on gaving a service "redis-master" AND
+# a service "redis-slave". We're using a single redis server, so we create
+# two services that point to the same pod.
+#
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  ports:
+    - protocol: "TCP"
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: worker
